@@ -40,7 +40,13 @@ def scrape():
 				break
 			time.sleep(3)
 			#look for player props
-			matchup = driver.find_element_by_xpath("//span[contains(text(), 'vs.')]")
+			try:
+				matchup = driver.find_element_by_xpath("//span[contains(text(), 'vs.')]")
+			except NoSuchElementException: 
+				print('couldn\'t find matchup for '+str(index))
+				driver.back()
+				time.sleep(3)
+				continue
 			try:
 				props = driver.find_element_by_xpath("//button[contains(text(), 'Player Props')]")
 				props.click()
@@ -63,8 +69,8 @@ def scrape():
 					labels = fullLines[idx].find_elements(By.CLASS_NAME, 'label')
 					prices = fullLines[idx].find_elements(By.CLASS_NAME, 'price')
 					file.write(line.text+","+labels[0].text+","+prices[0].text+","+labels[1].text+","+prices[1].text+"\n")
-				except NoSuchElementException:
-					print('line '+idx+' is locked in '+matchup)
+				except (NoSuchElementException, IndexError):
+					print('line '+idx+' is locked/missing in '+matchup)
 					continue
 			file.close()
 			driver.back()
