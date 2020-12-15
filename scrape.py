@@ -91,6 +91,7 @@ def scrape():
 					underidentifier = matchup.text+parts[0]+parts[3]
 					firstOddsValue = int(parts[2])
 					secondOddsValue = int(parts[4])
+					#TODO clear window when we hit > 30?
 					if (overidentifier in bookieDict):
 						if (abs(bookieDict[overidentifier][0]-firstOddsValue) > 30):
 							_notify('difference for '+overidentifier+' has changed from '+bookieDict[overidentifier][0]+' to '+firstOddsValue)
@@ -122,6 +123,7 @@ def scrape():
 		driver.quit()
 
 if len(sys.argv) > 1:
+	scrape()
 	schedule.every(int(sys.argv[1])).minutes.do(scrape)
 	while True:
 	    schedule.run_pending()
